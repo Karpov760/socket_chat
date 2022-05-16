@@ -1,12 +1,21 @@
 import socket
-import time
 
-server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-server.settimeout(0.2)
-message = b"code_frase"
+CODE = b"code_phrase"
+HOST = bytes(socket.gethostbyname(socket.gethostname()), 'utf-8')
 
-server.sendto(message, ('<broadcast>', 37020))
-data, addr = server.recvfrom(1024)
-print("received message: %s" % data)
+client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP) # UDP
+client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+client.bind(("", 37020))
+
+
+
+
+while True:
+    #если новый ip присылает кодовую фразу, вернуть ему хост, добавть в список известных ip клиентов
+    #может быть получать кодовую фразу + логин?
+
+    #если знакомый ip парсить бродкаст или ptp и работать как с чатом
+    data, addr = client.recvfrom(1024)
+    print("received message: %s"%data)
+    client.sendto(HOST, addr)
